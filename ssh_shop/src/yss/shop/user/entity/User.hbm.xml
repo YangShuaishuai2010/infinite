@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE hibernate-mapping PUBLIC 
+    "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+    "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<hibernate-mapping>
+	<!--配置类和表的映射关系 -->
+	<class name="yss.shop.user.entity.User" table="t_user" lazy="false">
+		<id name="uid" column="uid">
+			<!-- 由Hibernate根据底层数据库自行判断采用identity、hilo、sequence其中一种作为主键生成方式 -->
+			<generator class="native"></generator>
+		</id>
+
+		<property name="username" column="username"></property>
+		<property name="password" column="password"></property>
+		<property name="name" column="name"></property>
+		<property name="gender" column="gender"></property>
+		<property name="email" column="email"></property>
+		<property name="phone" column="phone"></property>
+		<property name="address" column="address"></property>
+		<property name="state" column="state"></property>
+		<property name="code" column="code"></property>
+		
+		<!-- 表示多条拜访记录 -->
+		<!-- <set name="setUserVisit">
+			<key column="uvid"></key>
+			<one-to-many class="yss.entity.Visit"/>
+		</set> -->
+	</class>
+</hibernate-mapping>

@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE hibernate-mapping PUBLIC 
+    "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+    "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<hibernate-mapping>
+	<!--配置类和表的映射关系 -->
+	<class name="yss.shop.order.entity.Order" table="t_order" lazy="false">
+		<id name="oid" column="oid">
+			<!-- 由Hibernate根据底层数据库自行判断采用identity、hilo、sequence其中一种作为主键生成方式 -->
+			<generator class="native"></generator>
+		</id>
+
+		<property name="total" column="total"></property>
+		<property name="ordertime" column="ordertime"></property>
+		<property name="state" column="state"></property>
+		<property name="name" column="name"></property>
+		<property name="address" column="address"></property>
+		<property name="phone" column="phone"></property>
+		
+		<!-- 关联关系：与用户的关系 -->
+		<many-to-one name="user" lazy="false" class="yss.shop.user.entity.User" column="uid"></many-to-one>
+		<!-- 关联关系：与订单项的关系 -->
+		<set name="orderItems" order-by="itemid" cascade="save-update" lazy="false">
+			<key column="uid"></key>
+			<one-to-many class="yss.shop.order.entity.OrderItem"></one-to-many>
+		</set>
+		
+	</class>
+</hibernate-mapping>

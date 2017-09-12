@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-mapping PUBLIC 
+    "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+    "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<hibernate-mapping>
+	<class name="yss.shop.category.entity.Category" table="t_category" lazy="false">
+		<id name="cid" column="cid">
+			<generator class="native"></generator>
+		</id>
+		<property name="cname" column="cname"></property>
+		
+		<!-- 配置二级分类的集合 
+			 order-by:把查询出的集合中的内容按 某一个字段 进行排序
+			 cascade:级联操作，"delete" 级联删除
+		-->
+		<set order-by="csid" cascade="delete" name="categorySeconds" lazy="false">
+			<key column="cid"></key>
+			<one-to-many class="yss.shop.categorysecond.entity.CategorySecond"/>
+		</set>
+	</class>
+</hibernate-mapping>

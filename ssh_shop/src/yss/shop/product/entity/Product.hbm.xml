@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE hibernate-mapping PUBLIC 
+    "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+    "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<hibernate-mapping>
+	<!--配置类和表的映射关系 -->
+	<class name="yss.shop.product.entity.Product" table="t_product" lazy="false">
+		<id name="pid" column="pid">
+			<!-- 由Hibernate根据底层数据库自行判断采用identity、hilo、sequence其中一种作为主键生成方式 -->
+			<generator class="native"></generator>
+		</id>
+
+		<property name="pname" column="pname"></property>
+		<property name="market_price" column="market_price"></property>
+		<property name="shop_price" column="shop_price"></property>
+		<property name="num" column="num"></property>
+		<property name="image" column="image"></property>
+		<property name="pdesc" column="pdesc"></property>
+		<property name="is_hot" column="is_hot"></property>
+		<property name="pDate" column="pDate"></property>
+		
+		<!-- 表示多条拜访记录 -->
+		<!-- <set name="setUserVisit">
+			<key column="uvid"></key>
+			<one-to-many class="yss.entity.Visit"/>
+		</set> -->
+		<many-to-one name="categorySecond" lazy="false" class="yss.shop.categorysecond.entity.CategorySecond" column="csid"></many-to-one>
+	</class>
+</hibernate-mapping>

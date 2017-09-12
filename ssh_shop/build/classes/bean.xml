@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:cache="http://www.springframework.org/schema/cache"
+    xmlns:jdbc="http://www.springframework.org/schema/jdbc"
+    xmlns:context="http://www.springframework.org/schema/context"
+    xmlns:aop="http://www.springframework.org/schema/aop"
+    xmlns:tx="http://www.springframework.org/schema/tx"
+    xmlns:jms="http://www.springframework.org/schema/jms"
+    xmlns:lang="http://www.springframework.org/schema/lang"
+    xmlns:jee="http://www.springframework.org/schema/jee"
+    xmlns:util="http://www.springframework.org/schema/util"
+    xsi:schemaLocation="
+        http://www.springframework.org/schema/beans 
+        http://www.springframework.org/schema/beans/spring-beans.xsd
+        http://www.springframework.org/schema/context
+        http://www.springframework.org/schema/context/spring-context.xsd
+        http://www.springframework.org/schema/aop
+		http://www.springframework.org/schema/aop/spring-aop.xsd
+		http://www.springframework.org/schema/tx
+		http://www.springframework.org/schema/tx/spring-tx.xsd
+		http://www.springframework.org/schema/cache
+		http://www.springframework.org/schema/cache/spring-cache.xsd
+		http://www.springframework.org/schema/jdbc
+		http://www.springframework.org/schema/jdbc/spring-jdbc.xsd
+		http://www.springframework.org/schema/jms
+		http://www.springframework.org/schema/jms/spring-jms.xsd
+		http://www.springframework.org/schema/lang
+		http://www.springframework.org/schema/lang/spring-lang.xsd
+		http://www.springframework.org/schema/jee
+		http://www.springframework.org/schema/jee/spring-jee.xsd
+		http://www.springframework.org/schema/util
+		http://www.springframework.org/schema/util/spring-util.xsd">
+		
+	<!-- 配置连接池 -->
+	<!-- 引入外部属性文件 -->
+	<context:property-placeholder location="classpath:jdbc.properties"/>	
+	<!-- 配置c3p0连接池 -->
+	<bean id="dataSource" class="com.mchange.v2.c3p0.ComboPooledDataSource" destroy-method="close">
+		<!-- 注入属性值 -->
+		<property name="driverClass" value="${jdbc.driver}"></property>
+		<property name="jdbcUrl" value="${jdbc.url}"></property>
+		<property name="user" value="${jdbc.user}"></property>
+		<property name="password" value="${jdbc.password}"></property>
+	</bean>
+	
+	<!-- 把hibernate的sessionFactory创建交给spring管理 -->	
+	<!-- 创建sessionfactory -->		
+	<bean id="sessionFactory" class="org.springframework.orm.hibernate5.LocalSessionFactoryBean">
+		<!-- 因在hibernate核心配置文件中，没有了数据库的配置
+			   数据库的配置放在了spring中配置，所以此处注入dataSource
+		 -->
+		<property name="dataSource" ref="dataSource"></property>
+		<!-- 指定使用的hibernate核心配置文件名及位置 -->
+		<property name="configLocations" value="classpath:hibernate.cfg.xml"></property>
+		<!-- <property name="hibernate.cache.use_query_cache" value="false"></property> -->
+	</bean>
+	
+	<!-- action的配置===========开始====================================== -->
+	<!-- 首页访问的action配置 -->
+	<bean name="indexAction" class="yss.shop.index.action.IndexAction" scope="prototype">
+		<property name="productService"  ref="productService"></property>
+		<property name="categoryService" ref="categoryService"></property>
+	</bean>
+	<!-- 配置验证码的action -->
+	<bean id="checkImgAction" class="yss.shop.user.action.CheckImgAction" scope="prototype">
+	</bean>
+	<!-- 配置购物车的action -->
+	<bean id="cartAction" class="yss.shop.cart.action.CartAction" scope="prototype">
+		<property name="productService"  ref="productService"></property>
+	</bean>
+	<!-- 配置后台一级分类管理的action -->
+	<bean id="adminCategoryAction" class="yss.shop.category.adminaction.AdminCategoryAction" scope="prototype">
+		<property name="categoryService"  ref="categoryService"></property>
+	</bean>
+	<!-- 配置后台商品管理的action -->
+	<bean id="aminProductAction" class="yss.shop.product.adminaction.AdminProductAction" scope="prototype">
+		<property name="productService"  ref="productService"></property>
+		<property name="categorySecondService"  ref="categorySecondService"></property>
+	</bean>
+	<!-- 配置后台订单管理的action -->
+	<bean id="adminOrderAction" class="yss.shop.order.adminaction.AdminOrderAction" scope="prototype">
+		<property name="orderService"  ref="orderService"></property>
+	</bean>
+	<!-- action的配置===========结束====================================== -->
+
+	
+	<!-- 创建service的对象===========开始====================================== -->
+	<!-- 创建service的对象===========结束====================================== -->
+	
+	<!-- 创建实现类dao的对象===========开始====================================== -->
+	<!-- 创建实现类dao的对象===========结束====================================== -->
+
+
+	<!-- 事务管理器 -->
+	<bean id="transactionManager" class="org.springframework.orm.hibernate5.HibernateTransactionManager">
+		<!-- 注入dataSource -->
+		<!-- 因为dataSource注入了sessionFactory中，所以此处直接注入sessionFactory -->
+		<property name="sessionFactory" ref="sessionFactory"></property>
+	</bean>
+	<!-- 开启事务注解 -->
+	<tx:annotation-driven transaction-manager="transactionManager" />
+		
+	
+	<!-- 引入其他spring配置文件 -->
+	<import resource="classpath:user.bean.xml"/>
+	<import resource="classpath:category.bean.xml"/>
+	<import resource="classpath:product.bean.xml"/>
+	<import resource="classpath:order.bean.xml"/>
+	<import resource="classpath:adminUser.bean.xml"/>
+	<import resource="classpath:adminCategorySecond.bean.xml"/>
+	
+</beans>
